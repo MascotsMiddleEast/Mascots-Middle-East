@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Mascots Middle East custom form</title>
+</head>
+<body>
+
+
+<style>
+/* Layout: single column, phone-first intake form, numbered questions */
+:root {
+  --bg: #faf7f2;
+  --surface: #ffffff;
+  --fg: #1d1a16;
+  --muted: #6b645b;
+  --line: #e4ddd2;
+  --accent: #c2410c;
+  --accent-fg: #ffffff;
+  --track: #e4ddd2;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #151310;
+    --surface: #1f1c18;
+    --fg: #f3eee6;
+    --muted: #a39a8e;
+    --line: #34302a;
+    --accent: #fb923c;
+    --accent-fg: #1a0f05;
+    --track: #34302a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #151310;
+  --surface: #1f1c18;
+  --fg: #f3eee6;
+  --muted: #a39a8e;
+  --line: #34302a;
+  --accent: #fb923c;
+  --accent-fg: #1a0f05;
+  --track: #34302a;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "DM Sans", system-ui, sans-serif;
+  line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-top: 24px;
+  padding-bottom: 40px;
+}
+main { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+h1, h2 { font-family: "Fraunces", Georgia, serif; font-weight: 600; text-wrap: balance; margin: 0; }
+h1 { font-size: 30px; line-height: 1.15; }
+.intro { color: var(--muted); margin: 0; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.q-head { display: flex; gap: 10px; align-items: baseline; }
+.q-num {
+  font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums;
+}
+h2 { font-size: 18px; }
+.hint { color: var(--muted); font-size: 13px; margin: 0; }
+input[type="text"] {
+  font: inherit; color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px;
+  width: 100%; min-width: 0;
+}
+input[type="text"]:focus-visible, input[type="range"]:focus-visible, label:focus-within {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+.options { display: flex; flex-wrap: wrap; gap: 8px; }
+.options label {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 8px 14px; cursor: pointer; font-size: 15px;
+}
+.options input { accent-color: var(--accent); margin: 0; }
+.budget-value {
+  font-family: "Fraunces", Georgia, serif; font-size: 28px; font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.budget-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+input[type="range"] {
+  width: 100%; accent-color: var(--accent); margin: 8px 0 0;
+}
+.scale { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.dropzone {
+  border: 1px dashed var(--line); border-radius: 10px; padding: 16px;
+  text-align: center; color: var(--muted); font-size: 14px;
+}
+.dropzone input { margin-top: 8px; max-width: 100%; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+button {
+  font: inherit; font-weight: 600; border-radius: 999px; padding: 12px 20px;
+  border: 1px solid var(--accent); cursor: pointer; min-height: 44px;
+}
+button.primary { background: var(--accent); color: var(--accent-fg); flex: 1 1 200px; }
+button.ghost { background: transparent; color: var(--fg); border-color: var(--line); }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#output {
+  white-space: pre-wrap; font-family: ui-monospace, Menlo, monospace; font-size: 13px;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 14px;
+  overflow-x: auto; margin: 0;
+}
+.status { color: var(--muted); font-size: 13px; margin: 0; min-height: 1em; }
+.wa-btn {
+  flex: 1 1 200px; display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 600; border-radius: 999px; padding: 12px 20px; min-height: 44px;
+  background: #25d366; color: #0b1f10; text-decoration: none; border: 1px solid #25d366;
+}
+.wa-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: no-preference) {
+  .card { transition: border-color 0.2s ease; }
+}
+</style>
+
+<main>
+  <header>
+    <h1>Start your custom mascot</h1>
+    <p class="intro">Answer the questions below. Custom mascots start from <strong>$700</strong> and take <strong>30 to 45 days</strong> to produce after the design is approved. When you're done, tap the "Send on WhatsApp" button to send us your answers.</p>
+  </header>
+
+  <form id="intake" novalidate>
+
+    <section class="card">
+      <div class="q-head"><span class="q-num">1</span><h2>Brand name &amp; country</h2></div>
+      <label for="brand" class="hint">Brand name</label>
+      <input type="text" id="brand" name="brand" autocomplete="organization" placeholder="Your brand or team name">
+      <label for="country" class="hint">Country</label>
+      <input type="text" id="country" name="country" autocomplete="country-name" placeholder="e.g. Lebanon">
+    </section>
+
+    <section class="card">
+      <div class="q-head"><span class="q-num">2</span><h2>What type of business are you?</h2></div>
+      <div class="options" role="radiogroup" aria-label="Business type">
+        <label><input type="radio" name="businessType" value="Sports team or club"> Sports team or club</label>
+        <label><input type="radio" name="businessType" value="Food business"> Food business</label>
+        <label><input type="radio" name="businessType" value="Event or entertainment company"> Event or entertainment company</label>
+        <label><input type="radio" name="businessType" value="Other"> Other</label>
+      </div>
+      <input type="text" id="businessOther" name="businessOther" placeholder="If other, tell us briefly" aria-label="Other business type">
+    </section>
+
+    <section class="card">
+      <div class="q-head"><span class="q-num">3</span><h2>What will the mascot be used for?</h2></div>
+      <div class="options">
+        <label><input type="checkbox" name="use" value="Business event"> Business event</label>
+        <label><input type="checkbox" name="use" value="Festival"> Festival</label>
+        <label><input type="checkbox" name="use" value="Personal use"> Personal use</label>
+        <label><input type="checkbox" name="use" value="Other"> Other</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="q-head"><span class="q-num">4</span><h2>Budget (USD)</h2></div>
+      <div class="budget-row">
+        <span class="hint">Slide to your range</span>
+        <span class="budget-value" id="budgetValue">Maximum $700</span>
+      </div>
+      <input type="range" id="budget" name="budget" min="700" max="2000" step="50" value="700" aria-label="Budget in US dollars" oninput="updateBudget()" onchange="updateBudget()">
+      <div class="scale" aria-hidden="true"><span>$700</span><span>$2,000+</span></div>
+      <label class="options" style="margin-top:4px">
+        <input type="checkbox" id="notSure" name="notSure"> <span>Not sure yet, I'd like a recommendation</span>
+      </label>
+    </section>
+
+    <section class="card">
+      <div class="q-head"><span class="q-num">5</span><h2>Send us the design</h2></div>
+      <div class="options" role="radiogroup" aria-label="Do you already have a design?">
+        <label><input type="radio" name="hasDesign" value="yes"> I already have a design</label>
+        <label><input type="radio" name="hasDesign" value="no"> I don't have one yet</label>
+      </div>
+      <p class="hint">Send your design on WhatsApp after you finish the form. If you need help with the design, a $100 deposit is required. It will be deducted from your final price.</p>
+    </section>
+
+    <section class="card">
+      <div class="q-head"><span class="q-num">6</span><h2>Date of the event or opening</h2></div>
+      <p class="hint">If you know the exact date, tell us now. We need it to plan production, since mascots take 30 to 45 days.</p>
+      <label for="eventDate" class="hint">Exact date</label>
+      <input type="date" id="eventDate" name="eventDate" style="display:block;font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;width:100%;max-width:100%;min-width:0;height:48px;-webkit-appearance:none;appearance:none;">
+      <label class="options" style="margin-top:4px">
+        <input type="checkbox" id="dateUnknown" name="dateUnknown"> <span>Not sure yet, we'll confirm later</span>
+      </label>
+    </section>
+
+    <section class="card">
+      <div class="q-head"><h2 style="font-size:15px">Anything else you want us to know?</h2></div>
+      <textarea id="notes" name="notes" rows="2" placeholder="Optional" style="font:inherit;font-size:14px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 12px;width:100%;min-width:0;resize:vertical;"></textarea>
+    </section>
+
+    <div class="actions" style="margin-top:8px;">
+      <button type="submit" class="primary">Create my message</button>
+      <button type="reset" class="ghost" id="reset">Clear form</button>
+    </div>
+  </form>
+
+  <section class="card" id="result" hidden>
+    <div class="q-head"><h2>Your answers</h2></div>
+    <p class="hint">Copy this and paste it into WhatsApp.</p>
+    <pre id="output"></pre>
+    <div class="actions">
+      <a id="waBtn" class="wa-btn" href="https://wa.me/96171724127" target="_blank" rel="noopener">Send on WhatsApp</a>
+      <button type="button" class="ghost" id="copy">Copy message</button>
+    </div>    <p class="status" id="status" role="status" aria-live="polite"></p>  </section>
+
+  <footer style="text-align:center;margin-top:8px;">
+    <p class="hint" style="margin:0 0 6px;">Thank you for choosing Mascots Middle East. We'll be in touch soon!</p>
+    <p class="hint" style="margin:0;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;">Mascots Middle East</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var form = document.getElementById('intake');
+  var budget = document.getElementById('budget');
+  var budgetValue = document.getElementById('budgetValue');
+  var notSure = document.getElementById('notSure');
+  var result = document.getElementById('result');
+  var output = document.getElementById('output');
+  var copyBtn = document.getElementById('copy');
+  var status = document.getElementById('status');
+
+  function fmtBudget() {
+    var v = Number(budget.value);
+    budgetValue.textContent = 'Maximum ' + (v >= 2000 ? '$2,000+' : '$' + v.toLocaleString('en-US'));
+  }
+  budget.addEventListener('input', function () {
+    notSure.checked = false;
+    fmtBudget();
+  });
+  budget.addEventListener('change', function () {
+    notSure.checked = false;
+    fmtBudget();
+  });
+  notSure.addEventListener('change', function () {
+    if (notSure.checked) budgetValue.textContent = 'Not sure';
+    else fmtBudget();
+  });
+  fmtBudget();
+  window.updateBudget = function () {
+    notSure.checked = false;
+    fmtBudget();
+  };
+  // Some in-app viewers don't deliver range events, so also check the slider value on a timer.
+  var lastBudget = budget.value;
+  setInterval(function () {
+    if (budget.value !== lastBudget) {
+      lastBudget = budget.value;
+      notSure.checked = false;
+      fmtBudget();
+    }
+  }, 150);
+
+  function checked(name) {
+    return Array.prototype.map.call(
+      form.querySelectorAll('input[name="' + name + '"]:checked'),
+      function (el) { return el.value; }
+    );
+  }
+  function radio(name) {
+    var el = form.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : '';
+  }
+  function val(id) { return document.getElementById(id).value.trim(); }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var typeVal = radio('businessType');
+    if (typeVal === 'Other' && val('businessOther')) typeVal = 'Other: ' + val('businessOther');
+    var uses = checked('use');
+    var date = val('eventDate');
+    var dateUnknown = document.getElementById('dateUnknown').checked;
+    var hasDesign = radio('hasDesign');
+    var budgetText = notSure.checked ? 'Not sure, recommend a range' :
+      (Number(budget.value) >= 2000 ? 'Maximum $2,000+' : 'Maximum $' + Number(budget.value).toLocaleString('en-US'));
+
+    var lines = [
+      'Hi! I want to order a custom mascot.',
+      '',
+      '1. Brand name & country: ' + (val('brand') || '-') + ', ' + (val('country') || '-'),
+      '2. Business type: ' + (typeVal || '-'),
+      '3. Mascot use: ' + (uses.length ? uses.join(', ') : '-'),
+      '4. Budget: ' + budgetText,
+      '5. Design: ' + (hasDesign === 'yes' ? 'I have one, I will attach it in this chat' :
+        hasDesign === 'no' ? "I need help designing it\n   $100 deposit required. It will be deducted from your final price once your order is confirmed." : 'I will attach it in this chat'),
+      '6. Date: ' + (dateUnknown ? 'Not decided yet, we will confirm later' :
+        (date ? new Date(date + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '-')),
+      '',
+      hasDesign === 'no' ? 'Reminder: I will need your help with the design.' :
+        'Reminder: I will send my design file in this chat right after this message.',
+      val('notes') ? 'Note: ' + val('notes') : ''
+    ];
+    var message = lines.join('\n').replace(/\n+$/, '');
+    output.textContent = message;
+    document.getElementById('waBtn').href =
+      'https://wa.me/96171724127?text=' + encodeURIComponent(message);
+    result.hidden = false;
+    status.textContent = '';
+    result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  document.getElementById('waBtn').addEventListener('click', function () {
+    var text = output.textContent;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        status.textContent = 'Your answers are copied. Paste them into the WhatsApp chat.';
+      }, function () {
+        status.textContent = 'Tap "Copy message" first, then paste it into the WhatsApp chat.';
+      });
+    }
+  });
+
+  copyBtn.addEventListener('click', function () {
+    var text = output.textContent;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        status.textContent = 'Copied. Paste it into our WhatsApp chat.';
+      }, function () {
+        selectText();
+      });
+    } else {
+      selectText();
+    }
+  });
+
+  function selectText() {
+    var range = document.createRange();
+    range.selectNodeContents(output);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    status.textContent = 'Select the text above and copy it.';
+  }
+
+  document.getElementById('reset').addEventListener('click', function () {
+    form.reset();
+    document.getElementById('notes').value = '';
+    notSure.checked = false;
+    document.getElementById('dateUnknown').checked = false;
+    fmtBudget();
+    result.hidden = true;
+  });
+})();
+</script>
+
+</body>
+</html>
