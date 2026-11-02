@@ -113,13 +113,25 @@ button.ghost { background: transparent; color: var(--fg); border-color: var(--li
     </section>
 
     <section class="pay">
-      <strong>A deposit is required to confirm your order.</strong>
+      <strong>If you're in Lebanon</strong>
+      <span class="hint">A deposit is required to confirm your order.</span>
       <span class="hint">Payment via Whish Money: +961 71851689</span>
       <span class="hint">Include your full name as the reference.</span>
-      <span class="hint"><strong>Outside Lebanon:</strong> the full amount must be paid to confirm your order. Send it in USD via Western Union, MoneyGram, or Whish Money: +961 71851689.</span>
       <div class="options" role="radiogroup" aria-label="Have you sent the deposit?">
         <label><input type="radio" name="depositSent" value="yes"> Yes, I sent the deposit</label>
         <label><input type="radio" name="depositSent" value="no"> No</label>
+      </div>
+    </section>
+
+    <section class="pay">
+      <strong>If you're outside Lebanon</strong>
+      <span class="hint">The full amount must be paid in USD to confirm your order.</span>
+      <span class="hint">Choose how you'll pay. We'll send you the payment details after you choose.</span>
+      <div class="options" role="radiogroup" aria-label="Outside Lebanon: how will you pay?">
+        <label><input type="radio" name="payMethod" value="MoneyGram"> MoneyGram</label>
+        <label><input type="radio" name="payMethod" value="Western Union"> Western Union</label>
+        <label><input type="radio" name="payMethod" value="Bank transfer"> Bank transfer</label>
+        <label><input type="radio" name="payMethod" value="Whish Money"> Whish Money</label>
       </div>
     </section>
 
@@ -159,6 +171,8 @@ button.ghost { background: transparent; color: var(--fg); border-color: var(--li
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var checkedDeposit = form.querySelector('input[name="depositSent"]:checked');
+    var checkedPay = form.querySelector('input[name="payMethod"]:checked');
+    var payValue = checkedPay ? checkedPay.value : '';
     var depositValue = checkedDeposit ? checkedDeposit.value : '';
     var lines = [
       'Hi! I want to confirm my order.',
@@ -171,9 +185,11 @@ button.ghost { background: transparent; color: var(--fg); border-color: var(--li
       'Country: ' + (val('country') || '-'),
       'ZIP: ' + (val('zip') || '-'),
       '',
-      'Deposit sent: ' + (depositValue === 'yes' ? 'Yes, via Whish Money' : depositValue === 'no' ? 'No' : '-')
+      depositValue ? 'Deposit sent (Lebanon): ' + (depositValue === 'yes' ? 'Yes' : 'No') : '',
+      payValue ? 'Payment method (outside Lebanon): ' + payValue : '',
+      payValue ? 'Please send me the payment information.' : ''
     ];
-    var message = lines.join('\n');
+    var message = lines.filter(function (l, i, arr) { return l !== '' || (i > 0 && arr[i - 1] !== ''); }).join('\n').replace(/\n+$/, '');
     output.textContent = message;
     waBtn.href = 'https://wa.me/96171724127?text=' + encodeURIComponent(message);
     result.hidden = false;
